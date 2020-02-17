@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react"
+import AppViews from "./components/AppViews"
+import Login from "./components/Login"
+import "./App.css"
+
+// Handle user login credentials
 
 function App() {
+  const [isAuthenticated, setAuthenticated] = useState(false)
+  const [viewLogin, setViewLogin] = useState(false)
+  const handleAuth = () => {
+    sessionStorage.getItem("user") === null
+      ? setAuthenticated(false)
+      : setAuthenticated(true)
+  }
+  const toggleLogin = () => setViewLogin(!viewLogin)
+  useEffect(handleAuth, [])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <section className="App-header">
+        {isAuthenticated ? (
+          <AppViews handleAuth={handleAuth} setViewLogin={setViewLogin} />
+        ) : (
+          <>
+            {viewLogin ? (
+              <>
+                <button onClick={toggleLogin}>back</button>
+                <Login handleAuth={handleAuth} />
+              </>
+            ) : (
+              <>
+                Welcome <button onClick={toggleLogin}>Login</button>
+              </>
+            )}
+          </>
+        )}
+      </section>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
